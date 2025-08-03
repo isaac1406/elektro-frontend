@@ -13,7 +13,7 @@ const HomePage = () => {
       
       <div
         className="absolute w-[256px] h-[29px] top-[94px] left-[73.36px] opacity-100
-                   font-russo-one font-normal text-2xl leading-[100%] text-orange-400
+                   font-normal text-2xl leading-[100%] text-orange-400
                    flex items-center" 
       >
         Bem-vindo à Elektro!
@@ -264,7 +264,7 @@ const HomePage = () => {
       >
         Siga-nos nas redes sociais!
       </div>
-      
+
     </div>
   );
 };
