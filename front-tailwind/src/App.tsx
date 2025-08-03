@@ -1,35 +1,70 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import Header from './components/layouts/Header';
+import Sidebar from './components/layouts/Sidebar';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import NotFoundPage from './pages/NotFoundPage'; 
+import AppRoutes from './routes/AppRoutes'; 
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  // controlar a visibilidade da Sidebar
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  // controlar se o usuário está logado
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+
+  // alternar a visibilidade da sidebar
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  // fechar a sidebar
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+  };
+
+  // fazer o login
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
+
+  // fazer o logout
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setIsSidebarOpen(false);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    // Se o usuário estiver logado
+    <Router>
+      {isLoggedIn ? (
+        <div className="w-screen min-h-screen flex flex-col">
+          
+          <Header onMenuClick={toggleSidebar} />
+          
+          <Sidebar 
+            isOpen={isSidebarOpen} 
+            onClose={closeSidebar} 
+            onLogout={handleLogout} 
+          />
+          
+          <main className="flex-grow overflow-auto">
+            <AppRoutes /> 
+          </main>
 
-export default App
+        </div>
+      ) : (
+        // se o usuário não estiver logado
+        <Routes>
+          <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+          
+          <Route path="/cadastro" element={<RegisterPage />} />
+          
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      )}
+    </Router>
+  );
+}
